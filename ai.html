@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Infographie sur les relations entre IA, apprentissage automatique, deep learning et grands modèles de langage, ainsi que leurs limites.">
+  <title>IA, du général au génératif</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172a35;
+      --muted: #52646a;
+      --paper: #f6f4ed;
+      --panel: #fffefa;
+      --line: #d8ded7;
+      --teal: #147d78;
+      --teal-pale: #dcefeb;
+      --orange: #d45b37;
+      --orange-pale: #fae8dd;
+      --blue: #3869a0;
+      --blue-pale: #e5edf6;
+      --green: #547d49;
+      --green-pale: #e8efdf;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background-color: var(--paper);
+      background-image: radial-gradient(#c9d2cb 0.65px, transparent 0.65px);
+      background-size: 16px 16px;
+      color: var(--ink);
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 44px 0 38px;
+    }
+
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    .masthead span:last-child { text-align: right; }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 790px;
+      margin: 26px 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.6rem, 5vw, 4.6rem);
+      font-weight: 500;
+      line-height: 0.98;
+    }
+
+    .intro {
+      max-width: 680px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.22fr) minmax(350px, 0.78fr);
+      grid-template-areas:
+        "scope limits"
+        "scope tree"
+        "iterations iterations";
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      box-shadow: 0 3px 0 rgba(23, 42, 53, 0.04);
+      animation: arrive 500ms ease-out both;
+    }
+
+    .scope { grid-area: scope; animation-delay: 60ms; }
+    .limits { grid-area: limits; animation-delay: 120ms; }
+    .tree { grid-area: tree; animation-delay: 180ms; }
+    .iterations { grid-area: iterations; animation-delay: 240ms; }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+    }
+
+    .index {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .scope-graphic {
+      display: block;
+      width: min(100%, 610px);
+      height: auto;
+      margin: 0 auto;
+    }
+
+    .scope-graphic text {
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      fill: var(--ink);
+    }
+
+    .scope-graphic .label {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .scope-graphic .detail {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .scope-caption {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 12px 15px;
+      border-left: 3px solid var(--teal);
+      background: var(--teal-pale);
+      color: #274a4a;
+      font-size: 0.88rem;
+    }
+
+    .limit-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .limit-list li {
+      display: grid;
+      grid-template-columns: 35px 1fr;
+      gap: 11px;
+      align-items: start;
+    }
+
+    .number {
+      display: grid;
+      width: 32px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--orange-pale);
+      color: #9f3c22;
+      font-size: 0.8rem;
+      font-weight: 850;
+    }
+
+    .limit-list strong, .tree strong { display: block; margin-bottom: 2px; }
+    .limit-list p, .tree p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+
+    .tree-list {
+      margin: 0;
+      padding: 0 0 0 17px;
+      border-left: 2px solid var(--line);
+      list-style: none;
+    }
+
+    .tree-list li {
+      position: relative;
+      padding: 0 0 14px 13px;
+    }
+
+    .tree-list li:last-child { padding-bottom: 0; }
+
+    .tree-list li::before {
+      position: absolute;
+      top: 8px;
+      left: -22px;
+      width: 8px;
+      height: 8px;
+      border: 2px solid var(--panel);
+      border-radius: 50%;
+      background: var(--teal);
+      content: "";
+    }
+
+    .tree-list li:nth-child(2)::before { background: var(--blue); }
+    .tree-list li:nth-child(3)::before { background: var(--green); }
+    .tree-list li:nth-child(4)::before { background: var(--orange); }
+
+    .tree-list .arrow {
+      display: block;
+      margin-top: 2px;
+      color: #85908d;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .tree-list li:last-child .arrow { display: none; }
+
+    .iterations .section-head { margin-bottom: 18px; }
+
+    .iteration-grid {
+      display: grid;
+      grid-template-columns: minmax(210px, 0.7fr) minmax(0, 1.3fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    .iteration-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .chart-wrap { min-width: 0; }
+
+    .chart {
+      display: flex;
+      align-items: end;
+      gap: clamp(8px, 2vw, 20px);
+      height: 122px;
+      padding: 10px 14px 0;
+      border-bottom: 1px solid #aab5af;
+      background: repeating-linear-gradient(to bottom, transparent 0 29px, #e8ece6 30px 31px);
+    }
+
+    .bar-group {
+      display: flex;
+      flex: 1;
+      min-width: 35px;
+      height: 100%;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bar {
+      display: grid;
+      width: min(100%, 60px);
+      min-height: 24px;
+      place-items: start center;
+      padding-top: 5px;
+      border-radius: 4px 4px 0 0;
+      background: var(--blue);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 850;
+    }
+
+    .bar-group:nth-child(2) .bar { background: #508389; }
+    .bar-group:nth-child(3) .bar { background: var(--green); }
+    .bar-group:nth-child(4) .bar { background: #b78434; }
+    .bar-group:nth-child(5) .bar { background: var(--orange); }
+
+    .bar-label { color: var(--muted); font-size: 0.72rem; font-weight: 750; }
+
+    .chart-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 780px) {
+      .page { width: min(100% - 28px, 600px); padding-top: 24px; }
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-areas: "scope" "limits" "tree" "iterations";
+        gap: 12px;
+      }
+      .panel { padding: 19px; }
+      .iteration-grid { grid-template-columns: 1fr; gap: 14px; }
+      .chart { height: 112px; }
+      footer { flex-direction: column; gap: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="masthead">
+        <span>Repères · Intelligence artificielle</span>
+        <span>Du général au génératif</span>
+      </div>
+      <h1>Une famille de modèles,<br>plusieurs niveaux.</h1>
+      <p class="intro">L’IA est le grand domaine. À l’intérieur, des méthodes apprennent des données, des réseaux profonds apprennent des représentations, et les modèles de langage produisent du texte.</p>
+    </header>
+
+    <div class="layout">
+      <section class="panel scope" aria-labelledby="scope-title">
+        <div class="section-head">
+          <h2 id="scope-title">Des ensembles imbriqués</h2>
+          <span class="index">01 / PÉRIMÈTRES</span>
+        </div>
+        <svg class="scope-graphic" viewBox="0 0 640 500" role="img" aria-labelledby="scope-svg-title scope-svg-desc">
+          <title id="scope-svg-title">Cercles concentriques de l'intelligence artificielle aux modèles de langage</title>
+          <desc id="scope-svg-desc">L'intelligence artificielle contient le machine learning, qui contient le deep learning, qui contient les grands modèles de langage.</desc>
+          <circle cx="280" cy="250" r="226" fill="#e5edf6" stroke="#3869a0" stroke-width="2" />
+          <circle cx="280" cy="250" r="174" fill="#e8efdf" stroke="#547d49" stroke-width="2" />
+          <circle cx="280" cy="250" r="123" fill="#dcefeb" stroke="#147d78" stroke-width="2" />
+          <circle cx="280" cy="250" r="70" fill="#fae8dd" stroke="#d45b37" stroke-width="2" />
+          <text class="label" x="108" y="104">IA</text>
+          <text class="detail" x="108" y="123">systèmes intelligents</text>
+          <text class="label" x="146" y="150">ML</text>
+          <text class="detail" x="146" y="169">apprendre des données</text>
+          <text class="label" x="200" y="204">DL</text>
+          <text class="detail" x="200" y="223">réseaux profonds</text>
+          <text class="label" x="280" y="247" text-anchor="middle">LLM</text>
+          <text class="detail" x="280" y="268" text-anchor="middle">modèle de langage</text>
+          <path d="M 350 250 C 406 245 428 236 466 236" fill="none" stroke="#d45b37" stroke-width="1.5" />
+          <circle cx="350" cy="250" r="3" fill="#d45b37" />
+          <text class="detail" x="470" y="232">Texte en sortie</text>
+          <text class="detail" x="470" y="250">Multimodal selon</text>
+          <text class="detail" x="470" y="268">le modèle</text>
+          <path d="M 419 138 C 444 126 455 119 479 119" fill="none" stroke="#547d49" stroke-width="1.5" />
+          <circle cx="419" cy="138" r="3" fill="#547d49" />
+          <text class="detail" x="480" y="113">classification</text>
+          <text class="detail" x="480" y="131">&amp; prédiction</text>
+        </svg>
+        <p class="scope-caption"><strong>À retenir :</strong> LLM signifie « grand modèle de langage ». Les modèles multimodaux peuvent aussi traiter ou générer des images, de l’audio ou de la vidéo.</p>
+      </section>
+
+      <section class="panel limits" aria-labelledby="limits-title">
+        <div class="section-head">
+          <h2 id="limits-title">Garder un œil critique</h2>
+          <span class="index">02 / LIMITES</span>
+        </div>
+        <ol class="limit-list">
+          <li>
+            <span class="number">01</span>
+            <div><strong>Hallucinations</strong><p>Une réponse peut sembler assurée tout en étant fausse, inventée ou incohérente.</p></div>
+          </li>
+          <li>
+            <span class="number">02</span>
+            <div><strong>Biais</strong><p>Les données et choix de conception peuvent reproduire des tendances injustes ou inexactes.</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="panel tree" aria-labelledby="tree-title">
+        <div class="section-head">
+          <h2 id="tree-title">Du domaine à l’usage</h2>
+          <span class="index">03 / PARCOURS</span>
+        </div>
+        <ol class="tree-list">
+          <li><strong>IA · domaine général</strong><p>Théories et systèmes qui réalisent des tâches associées à l’intelligence.</p><span class="arrow" aria-hidden="true">↓</span></li>
+          <li><strong>ML · apprendre des exemples</strong><p>Classer (spam ou non) et prédire une valeur à partir de données.</p><span class="arrow" aria-hidden="true">↓</span></li>
+          <li><strong>DL · réseaux de neurones profonds</strong><p>Apprendre des représentations à l’aide de nombreuses couches.</p><span class="arrow" aria-hidden="true">↓</span></li>
+          <li><strong>LLM · langage à grande échelle</strong><p>Générer et transformer du texte; certaines variantes sont multimodales.</p></li>
+        </ol>
+      </section>
+
+      <section class="panel iterations" aria-labelledby="iterations-title">
+        <div class="section-head">
+          <h2 id="iterations-title">Itérer, puis vérifier</h2>
+          <span class="index">04 / FIABILITÉ</span>
+        </div>
+        <div class="iteration-grid">
+          <p class="iteration-copy">Une consigne mieux cadrée et plusieurs essais peuvent améliorer une réponse. La répétition seule ne rend pas une réponse vraie : confrontez-la aux sources et mesurez la précision sur un jeu de test adapté.</p>
+          <div class="chart-wrap" role="img" aria-label="Exemple illustratif de résultats qui s'améliorent au fil de cinq essais; les valeurs ne sont pas une garantie de précision réelle.">
+            <div class="chart" aria-hidden="true">
+              <div class="bar-group"><div class="bar" style="height: 30%">30%</div><span class="bar-label">Rep 1</span></div>
+              <div class="bar-group"><div class="bar" style="height: 43%">43%</div><span class="bar-label">Rep 2</span></div>
+              <div class="bar-group"><div class="bar" style="height: 61%">61%</div><span class="bar-label">Rep 3</span></div>
+              <div class="bar-group"><div class="bar" style="height: 78%">78%</div><span class="bar-label">Rep 4</span></div>
+              <div class="bar-group"><div class="bar" style="height: 94%">99%</div><span class="bar-label">Rep 5</span></div>
+            </div>
+            <p class="chart-note">Progression fictive : l’exemple 30 → 99 % illustre une mesure à valider, pas une promesse générale.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>Schéma pédagogique · les catégories décrivent des familles de méthodes, pas des niveaux de fiabilité.</span>
+      <span>IA / ML / DL / LLM</span>
+    </footer>
+  </main>
+</body>
+</html>
